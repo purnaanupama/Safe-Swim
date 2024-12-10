@@ -1,39 +1,42 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/useColorScheme';
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
+import { Stack } from "expo-router";
+import { useFonts } from "expo-font";
+import React, { useState, useEffect } from "react";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+  // Load the fonts using useFonts
+  const [fontsLoaded] = useFonts({
+    "poppins-medium": require("./../assets/fonts/Poppins-Medium.ttf"),
+    "poppins-extra-bold": require("./../assets/fonts/Poppins-ExtraBold.ttf"),
+    "poppins-semi-bold": require("./../assets/fonts/Poppins-SemiBold.ttf"),
+    "poppins-regular": require("./../assets/fonts/Poppins-Regular.ttf"),
+    "qwigley-regular": require("./../assets/fonts/Qwigley-Regular.ttf"),
+    "blackhansans-regular": require("./../assets/fonts/BlackHanSans-Regular.ttf"),
   });
 
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
+  // State to track when fonts are loaded
+  const [isReady, setIsReady] = useState(false);
 
-  if (!loaded) {
-    return null;
+  useEffect(() => {
+    if (fontsLoaded) {
+      setIsReady(true);
+    }
+  }, [fontsLoaded]);
+
+  // If fonts are not loaded yet, render a loading state or placeholder
+  if (!isReady) {
+    return null; // Or show a loading indicator here
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="(tabs)"/>
+      <Stack.Screen name="splash"/>
+      <Stack.Screen name="profile"/>
+    </Stack>
   );
 }
+
