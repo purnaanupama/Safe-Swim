@@ -1,13 +1,17 @@
 import { View, Text, StyleSheet, ImageBackground, TextInput, FlatList, TouchableOpacity, ScrollView, ToastAndroid } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import back_image from '../assets/images/splashfalls.jpg';
-import { collection, getDocs, limit, query, where, updateDoc,arrayUnion,serverTimestamp } from 'firebase/firestore';
+import { collection, getDocs, limit, query, where, updateDoc,arrayUnion } from 'firebase/firestore';
 import { db } from '../utils/FirebaseConfig';
 import RNPickerSelect from 'react-native-picker-select';
 import { Radio, CheckBox } from '../components/share_Exp';
 import { client } from '../utils/KindeConfig';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
+import { v4 as uuidv4 } from 'uuid'; 
+import 'react-native-get-random-values';
+
 
 export default function ShareExperience() {
   const [input, setInput] = useState('');
@@ -39,27 +43,72 @@ export default function ShareExperience() {
 useEffect(() => {
     userdetails();
  }, []);
+
+ const validateForm = () => {
+  if (!input) {
+    ToastAndroid.show('Place name is required', ToastAndroid.SHORT);
+    return false;
+  }
+  if (!waterSource) {
+    ToastAndroid.show('Water source is required', ToastAndroid.SHORT);
+    return false;
+  }
+  if (!input2) {
+    ToastAndroid.show('Nearest town is required', ToastAndroid.SHORT);
+    return false;
+  }
+  if (!safety) {
+    ToastAndroid.show('Safety information is required', ToastAndroid.SHORT);
+    return false;
+  }
+  if (safety !== 'safe' && deathReported && (!numDeaths || numDeaths <= 0)) {
+    ToastAndroid.show('Number of deaths must be greater than 0', ToastAndroid.SHORT);
+    return false;
+  }
+  if (!comment) {
+    ToastAndroid.show('Comment description is required', ToastAndroid.SHORT);
+    return false;
+  }
+  return true;
+};
+
+
+const resetForm = () => {
+  setInput('');
+  setInput2('');
+  setWaterSource('');
+  setSafety('');
+  setDeathReported(false);
+  setNumDeaths(0);
+  setComment('');
+};
   
-  const handleSubmit = async () => {
+ const handleSubmit = async () => {
+  if (!validateForm()) return;
   try {
     if (safety === "safe") {
       setDeathReported(false);
       setNumDeaths(0);
     }
     setLoading(true);
+
     // Create a query to filter documents where the 'name' field matches the input
     const q = query(collection(db, 'SafeAreas'), where('name', '==', input));
     const querySnapshot = await getDocs(q);
-  
+
     if (!querySnapshot.empty) {
       for (const docSnap of querySnapshot.docs) {
         const docRef = docSnap.ref; // Get document reference
         const data = docSnap.data(); // Get document data (optional, for logging or further processing)
         console.log('Document data:', data);
-  
+
+        // Generate a unique ID for the comment
+        const commentId = uuidv4();
+
         // Update the document with new comment data
         await updateDoc(docRef, {
           comment: arrayUnion({
+            id: commentId, // Add unique ID to the comment
             place: input,
             water_source: waterSource,
             town: input2,
@@ -67,15 +116,17 @@ useEffect(() => {
             death_reported: deathReported,
             no_of_deaths: numDeaths,
             comment: comment,
-            user_id:userId,
-            user_email:userEmail,
-            userImage:userImage,
+            user_id: userId,
+            user_email: userEmail,
+            userImage: userImage,
             time: new Date().toISOString()
           }),
         });
-        ToastAndroid.show('Comment Added Successfully !',ToastAndroid.BOTTOM);
+
+        ToastAndroid.show('Comment Added Successfully!', ToastAndroid.BOTTOM);
         console.log('Document updated successfully:', docRef.id);
         setLoading(false);
+        resetForm();
       }
     } else {
       setLoading(false);
@@ -88,7 +139,7 @@ useEffect(() => {
   setLoading(false);
 };
   
-  
+
   
   const getPlaces = async () => {
     setPlace([]);
@@ -127,6 +178,10 @@ useEffect(() => {
       const filtered = place.filter((place) =>
         place.toLowerCase().startsWith(text.toLowerCase())
       );
+      if(filtered.length < 1){
+        setSuggestions([`No results found`]);
+        return
+      }
       setSuggestions(filtered);
     } else {
       setSuggestions([]);
@@ -139,6 +194,10 @@ useEffect(() => {
       const filtered = town.filter((town) =>
         town.toLowerCase().startsWith(text.toLowerCase())
       );
+      if(filtered.length < 1){
+        setTownSuggestions([`No results found`]);
+        return
+      }
       setTownSuggestions(filtered);
     } else {
       setTownSuggestions([]);
@@ -276,17 +335,39 @@ useEffect(() => {
             onChangeText={setComment}
             multiline
           />
-         <TouchableOpacity
-          disabled={loading}
-          onPress={handleSubmit}
-           style={{
-           marginBottom:30,
-           backgroundColor:'#69696B',
-           paddingHorizontal:15,
-           paddingVertical:12,width:'85%',
-           marginTop:15,color:'#fff',
-           borderRadius:5}}><Text style={{fontFamily:'poppins-semi-bold',color:'#fff',textAlign:'center'}}>{loading?'Loading':'Submit'}</Text>
-           </TouchableOpacity>
+      {/* Gradient Submit Button */}
+      <LinearGradient
+          colors={['#3A3A3A', '#69696B', '#464646']} // Define gradient colors
+          start={{ x: 0, y: 0 }} // Starting point of the gradient
+          end={{ x: 0, y: 1 }} // Ending point of the gradient
+          style={{
+            marginBottom: 30,
+            paddingHorizontal: 12,
+            paddingVertical: 12,
+            width: '85%',
+            marginTop: 15,
+            borderRadius: 5,
+          }}
+        >
+          <TouchableOpacity
+            disabled={loading}
+            onPress={handleSubmit}
+            style={{
+              width: '100%',
+              borderRadius: 5
+            }}
+          >
+            <Text
+              style={{
+                fontFamily: 'poppins-semi-bold',
+                color: '#fff',
+                textAlign: 'center',
+              }}
+            >
+              {loading ? 'Loading' : 'Submit'}
+            </Text>
+          </TouchableOpacity>
+        </LinearGradient>
         </View>
       </ScrollView>
     </ImageBackground>
@@ -321,6 +402,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     paddingVertical: 13,
     paddingHorizontal: 15,
+    fontFamily: 'poppins-regular',
     borderRadius: 5,
     marginTop: 20,
     fontSize: 16,
@@ -329,7 +411,7 @@ const styles = StyleSheet.create({
   suggestionsContainer: {
     width: '85%',
     marginTop: 5,
-    backgroundColor: '#fff',
+    backgroundColor: '#d8d8d8',
     borderRadius: 5,
     borderColor: '#ddd',
     borderWidth: 1,
@@ -342,9 +424,11 @@ const styles = StyleSheet.create({
   },
   suggestionText: {
     fontSize: 16,
-    color: '#333',
+    color: '#737373',
+    fontFamily: 'poppins-regular',
   },
   pickerContainer: {
+    fontFamily: 'poppins-regular',
     width: '85%',
     marginTop: 20,
     alignItems: 'center',

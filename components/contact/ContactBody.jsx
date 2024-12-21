@@ -67,10 +67,11 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   social :{
-    marginTop:40,
+   marginTop:30,
    display:'flex',
    flexDirection:'row',
    alignItems:'center',
-   gap:20
+   gap:20,
+   paddingBottom:20
   }
 });

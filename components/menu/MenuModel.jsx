@@ -6,6 +6,7 @@ import { TouchableOpacity } from 'react-native';
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import { useRouter } from 'expo-router'
 
+
 export default function MenuModel({ onClose, visibility }) {
   const slideAnim = useRef(new Animated.Value(300)).current; // Start off-screen at the bottom
   const router = useRouter()
@@ -54,9 +55,13 @@ export default function MenuModel({ onClose, visibility }) {
             <TouchableOpacity onPress={()=>router.replace('/profile')}>
             <Text style={styles.modalText}>
             <Entypo name="user" size={23} color="black" />
-             &nbsp;&nbsp;&nbsp;My Profile</Text>
+             &nbsp;&nbsp;&nbsp;My profile</Text>
             </TouchableOpacity>
-    
+            <TouchableOpacity onPress={()=>router.replace('/hire_lifeguard/MakePayment')}>
+            <Text style={styles.modalText}>
+            <MaterialCommunityIcons name="shield-check" size={23} color="black"/>
+             &nbsp;&nbsp;&nbsp;Hire lifeguard</Text>
+            </TouchableOpacity>
           </Animated.View>
         </TouchableWithoutFeedback>
       </View>
@@ -82,7 +87,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    paddingTop:60
+    paddingTop:30
 
   },
   modalText: {
@@ -96,5 +101,5 @@ const styles = StyleSheet.create({
     fontFamily:'poppins-medium',
     paddingHorizontal:20,
     color: '#000',
-  },
+  }
 });

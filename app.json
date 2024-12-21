@@ -9,12 +9,20 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "AlzaSyI4GuMUvz4K_Hdc03zzAQ7u4AptyaQ_eYD"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "config": {
+        "googleMaps": {
+          "apiKey": "AlzaSyI4GuMUvz4K_Hdc03zzAQ7u4AptyaQ_eYD"
+        }
       }
     },
     "web": {

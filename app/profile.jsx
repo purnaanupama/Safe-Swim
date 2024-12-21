@@ -2,16 +2,18 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { client } from '../utils/KindeConfig';
-import { router } from 'expo-router';
+import { router, useRouter } from 'expo-router';
 import services from '../utils/services';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import swimmer from '../assets/images/swimmer.png'
+
 
 
 export default function Profile() {
     const [profileImage, setProfileImage] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const router = useRouter()
 
     const logout=async()=>{
       const loggedOut = await client.logout();
@@ -40,7 +42,7 @@ export default function Profile() {
             locations={[0.05, 0.6, 0.83, 1]}
         >
             <View style={styles.content}>
-                <TouchableOpacity onPress={()=>router.replace('/home')} style={{position:'absolute',left:0,top:0}}>
+                <TouchableOpacity onPress={()=>{router.push('/home')}}  style={{position:'absolute',left:0,top:0}}>
                 <Ionicons name="arrow-back-circle" size={40} color="#03005C"/>
                 </TouchableOpacity>
 

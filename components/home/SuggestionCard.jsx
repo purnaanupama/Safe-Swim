@@ -1,13 +1,16 @@
 import { View, Text, Image } from 'react-native';
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function SuggestionCard({data}) {
+  const router = useRouter()
+
   return (
     <View 
       style={{
-        marginLeft:15,
-        marginRight:15,
+        marginLeft:20,
+        marginRight:20,
         marginTop:20,
         shadowColor: '#000',
         shadowOffset: { width: 4, height: 4 },
@@ -17,7 +20,7 @@ export default function SuggestionCard({data}) {
         backgroundColor: 'white', // Background color to make the shadow visible
         borderRadius: 10,         // Optional: rounded corners
         overflow: 'hidden',
-        paddingBottom:10,
+        paddingBottom:17,
         marginBottom:6
       }}
     >
@@ -55,7 +58,7 @@ export default function SuggestionCard({data}) {
         >
              {data.description}
         </Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=>router.push(`/areaDetail/${data?.id}`)}>
           <Text style={{
             fontSize: 14,
             borderRadius:5,

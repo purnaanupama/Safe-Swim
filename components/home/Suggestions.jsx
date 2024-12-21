@@ -1,23 +1,34 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import SuggestionCard from './SuggestionCard';
-import { collection, getDocs, query } from 'firebase/firestore';
+import { query, collection, where, limit, getDocs } from 'firebase/firestore';
 import { db } from '../../utils/FirebaseConfig';
+import { useRouter } from 'expo-router';
+
 
 export default function Suggestions() {
   const [safeZoneList, setSafeZoneList] = useState([]);
+  const router = useRouter()
 
   useEffect(() => {
     GetSafeAreaList();
-  }, []);
+  },[]);
 
   const GetSafeAreaList = async () => {
-    setSafeZoneList([]);
-    const q = query(collection(db, 'SafeAreas'));
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      setSafeZoneList((prev) => [...prev, doc.data()]);
-    });
+    setSafeZoneList([]); // Clear the list before fetching new data
+    try {
+      const q = query(
+        collection(db, 'SafeAreas'),
+        where('known_to_be_safe', '==', true), // Filter by the field
+        limit(3) // Limit the results to 3
+      );
+      const querySnapshot = await getDocs(q);
+      querySnapshot.forEach((doc) => {
+        setSafeZoneList((prev) => [...prev, doc.data()]);
+      });
+    } catch (error) {
+      console.error("Error fetching safe areas: ", error);
+    }
   };
 
   return (
@@ -56,11 +67,11 @@ export default function Suggestions() {
         showsHorizontalScrollIndicator={false}
         renderItem={({ item, index }) => (
           <View>
-            <SuggestionCard data={item} key={index} />
+            <SuggestionCard data={item} key={index+1}/>
           </View>
         )}
       />
-       <TouchableOpacity>
+       <TouchableOpacity onPress={()=>{router.push('/FindSafe')}}>
           <Text style={{
             fontSize: 16,
             borderRadius:5,

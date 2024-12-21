@@ -18,6 +18,7 @@ export default function Header() {
   return (
     <View style={{
       paddingHorizontal: 20,
+      zIndex:10,
       height: 131,
       borderBottomLeftRadius: 20,
       borderBottomRightRadius: 20,
