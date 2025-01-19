@@ -162,7 +162,7 @@ export default function CheckWaterBodySafety() {
       }
     `;
   
-    const apiKey = 'AIzaSyCrSO4_7ZUpmIi_N8C2aYIee9rT3m0VO-g'; // Your API key
+    const apiKey = 'AIzaSyDIqjbnFsj7JMQ_rZE6A1FAs5P95RQKTkw'; // Your API key
   
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
   

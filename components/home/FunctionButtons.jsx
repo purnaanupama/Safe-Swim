@@ -15,7 +15,7 @@ export default function FunctionButtons() {
         gap:15,
         paddingHorizontal:15,
     }}>
-      <TouchableOpacity>
+      <TouchableOpacity  onPress={()=>router.replace('/googleMap/googleMap')}>
       <Text style={{
         backgroundColor:'#090930',
         color:'#fff',
