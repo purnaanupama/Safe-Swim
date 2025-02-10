@@ -4,6 +4,7 @@ import { TouchableOpacity } from 'react-native'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Feather from '@expo/vector-icons/Feather';
 import FontAwesome7 from '@expo/vector-icons/FontAwesome6';
+import { router } from 'expo-router';
 
 export default function FunctionButtons() {
   return (
@@ -13,7 +14,9 @@ export default function FunctionButtons() {
         gap:15,
         paddingHorizontal:15,
     }}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={
+        ()=>router.replace("/googleMap/GoogleMap")
+        }>
       <Text style={{
         backgroundColor:'#090930',
         color:'#fff',

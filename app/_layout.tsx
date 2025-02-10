@@ -1,6 +1,7 @@
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import React, { useState, useEffect } from "react";
+import { View, ActivityIndicator } from "react-native"; // Added for loading indicator
 
 export default function RootLayout() {
   // Load the fonts using useFonts
@@ -22,21 +23,25 @@ export default function RootLayout() {
     }
   }, [fontsLoaded]);
 
-  // If fonts are not loaded yet, render a loading state or placeholder
+  // If fonts are not loaded yet, render a loading indicator
   if (!isReady) {
-    return null; // Or show a loading indicator here
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
   }
 
   return (
     <Stack
       screenOptions={{
         headerShown: false,
+        animation: 'slide_from_right', // Optional: add a default screen transition
       }}
     >
-      <Stack.Screen name="(tabs)"/>
-      <Stack.Screen name="splash"/>
-      <Stack.Screen name="profile"/>
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen name="splash" />
+      <Stack.Screen name="profile" />
     </Stack>
   );
 }
-
